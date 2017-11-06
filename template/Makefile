@@ -3,7 +3,7 @@ GITHUB_USER={{GITHUB_USERNAME}}
 ORG_PATH=github.com/$(GITHUB_USER)
 REPO_PATH=$(ORG_PATH)/$(REPO)
 
-VERSION ?= $(shell ./scripts/git-version)
+VERSION ?= $(shell ./hacks/git-version)
 LD_FLAGS="-X main.Version=$(VERSION)  -extldflags \"-static\" "
 version.Version=$(VERSION)
 $( shell mkdir -p _bin )
