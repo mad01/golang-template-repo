@@ -21,6 +21,7 @@ sed -e "s/{{GITHUB_REPO}}/${GITHUB_REPO}/g; s/{{GITHUB_USERNAME}}/${GITHUB_USERN
 sed -e "s/{{GITHUB_REPO}}/${GITHUB_REPO}/g; s/{{GITHUB_USERNAME}}/${GITHUB_USERNAME}/g;" template/Dockerfile > $GITHUB_REPO/Dockerfile
 sed -e "s/{{GITHUB_REPO}}/${GITHUB_REPO}/g;" template/README.md > $GITHUB_REPO/README.md
 sed -e "s/{{GITHUB_REPO}}/${GITHUB_REPO}/g;" template/.gitignore > $GITHUB_REPO/.gitignore
+sed -e "s/{{GITHUB_REPO}}/${GITHUB_REPO}/g;" template/cmd.go > $GITHUB_REPO/cmd.go
 
 cp -r $GITHUB_REPO $GITHUB_USERNAME_DIR
 rm -r $GITHUB_REPO
