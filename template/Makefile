@@ -21,6 +21,9 @@ test:
 	@go test -v -i $(shell go list ./... | grep -v '/vendor/')
 	@go test -v $(shell go list ./... | grep -v '/vendor/')
 
+install:
+	@GOBIN=$(GOPATH)/bin && go install -v -ldflags $(LD_FLAGS) 
+
 build: build/dev
 
 build/dev:
