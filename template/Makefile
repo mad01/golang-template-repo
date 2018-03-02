@@ -44,3 +44,13 @@ docker/login:
 
 deps/ensure/vendor/only:
 	@dep ensure -vendor-only
+
+dev/setup:
+	@go get -u github.com/alecthomas/gometalinter
+	@gometalinter --install
+	@go get -u github.com/golang/dep/cmd/dep
+
+lint:
+	@gofmt -w -s *.go
+	@goimports -w *.go
+	@gometalinter --vendor --enable=goimports *.go
