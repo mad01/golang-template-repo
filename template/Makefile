@@ -18,8 +18,14 @@ clean:
 	@rm -r _bin _release
 
 test:
+	@echo "----- running gofmt -----"
+	hacks/verify-gofmt
+	@echo "----- running goimports -----"
+	hacks/verify-goimports
+	@echo "----- running tests -----"
 	@go test -v -i $(shell go list ./... | grep -v '/vendor/')
 	@go test -v $(shell go list ./... | grep -v '/vendor/')
+
 
 install:
 	@GOBIN=$(GOPATH)/bin && go install -v -ldflags $(LD_FLAGS) 
