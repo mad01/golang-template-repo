@@ -1,16 +1,13 @@
 package main
 
-import (
-	"github.com/{{GITHUB_USERNAME}}/{{GITHUB_REPO}}/log"
-)
 
 type Event struct {
 	Name string
 }
 
-func newEvent(serviceName, manifest string) *Event {
+func newEvent(name string) *Event {
 	e := &Event{
-		Name:     serviceName,
+		Name:     name,
 	}
 	return e
 }
@@ -38,7 +35,7 @@ func (e *EventHandler) worker(stopCh chan struct{}) {
 	for {
 		select {
 		case event := <-e.events:
-			log.Infof("%v", event)
+			log().Infof("%v", event)
 		case _ = <-stopCh:
 			return
 
