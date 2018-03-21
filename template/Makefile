@@ -1,62 +1,62 @@
 REPO={{GITHUB_REPO}}
 GITHUB_USER={{GITHUB_USERNAME}}
-ORG_PATH=github.com/$(GITHUB_USER)
-REPO_PATH=$(ORG_PATH)/$(REPO)
-
+REPO_PATH=github.com/$(GITHUB_USER)/$(REPO)
+CONTAINER=quay.io/$(GITHUB_USER)/$(REPO)
 VERSION ?= $(shell ./hacks/git-version)
 LD_FLAGS="-X main.Version=$(VERSION)  -extldflags \"-static\" "
-version.Version=$(VERSION)
+
 $( shell mkdir -p _bin )
 $( shell mkdir -p _release )
 
 export GOBIN=$(PWD)/_bin
 
-
-default: build
+default: format format-verify build-dev
 
 clean:
 	@rm -r _bin _release
 
-test:
-	@echo "----- running gofmt -----"
-	hacks/verify-gofmt
-	@echo "----- running goimports -----"
-	hacks/verify-goimports
+test: format-verify
 	@echo "----- running tests -----"
 	@go test -v -i $(shell go list ./... | grep -v '/vendor/')
 	@go test -v $(shell go list ./... | grep -v '/vendor/')
 
-
 install:
 	@GOBIN=$(GOPATH)/bin && go install -v -ldflags $(LD_FLAGS) 
 
-build: build/dev
-
-build/dev:
+build: build-release
+build-dev:
+	@echo "----- running dev build-----"
 	@go install -v -ldflags $(LD_FLAGS) 
 
-build/release:
+build-release:
+	@echo "----- running release build -----"
 	@go build -v -o _release/$(REPO) -ldflags $(LD_FLAGS) 
 
+container: container-build
+container-build:
+	@docker build -t $(CONTAINER):$(VERSION) --file Dockerfile .
 
-docker/build:
-	@docker build -t quay.io/$(GITHUB_USER)/$(REPO):$(VERSION) --file Dockerfile .
+container-push:
+	@docker push $(CONTAINER):$(VERSION)
 
-docker/push:
-	@docker push quay.io/$(GITHUB_USER)/$(REPO):$(VERSION)
-
-docker/login:
+quay-login:
 	@docker login -u $(QUAY_LOGIN) -p="$(QUAY_PASSWORD)" quay.io
 
-deps/ensure/vendor/only:
+dep-ensure:
 	@dep ensure -vendor-only
 
-dev/setup:
-	@go get -u github.com/alecthomas/gometalinter
-	@gometalinter --install
+setup-deps:
 	@go get -u github.com/golang/dep/cmd/dep
+	@go get -u golang.org/x/tools/cmd/goimports
 
-lint:
+format:
+	@echo "----- running gofmt -----"
 	@gofmt -w -s *.go
+	@echo "----- running goimports -----"
 	@goimports -w *.go
-	@gometalinter --vendor --enable=goimports *.go
+
+format-verify:
+	@echo "----- running gofmt verify -----"
+	@hacks/verify-gofmt
+	@echo "----- running goimports verify -----"
+	@hacks/verify-goimports

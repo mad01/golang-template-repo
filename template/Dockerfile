@@ -6,7 +6,7 @@ WORKDIR $buildpath
 
 COPY . .
 
-RUN make build/release
+RUN make build
 RUN go get -u golang.org/x/tools/cmd/goimports
 RUN make test
 
