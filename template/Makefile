@@ -46,6 +46,7 @@ dep-ensure:
 	@dep ensure -vendor-only
 
 setup-deps:
+	@unset GOBIN
 	@go get -u github.com/golang/dep/cmd/dep
 	@go get -u golang.org/x/tools/cmd/goimports
 
