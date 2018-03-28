@@ -8,14 +8,18 @@ import (
 )
 
 type controller struct {
-	interval time.Duration
-	kube     *Kube
+	interval   time.Duration
+	kube       *Kube
+	stopCh     chan struct{}
+	signalChan chan os.Signal
 }
 
 func newController(kube *Kube, interval time.Duration) *controller {
 	c := &controller{
-		interval: interval,
-		kube:     kube,
+		interval:   interval,
+		kube:       kube,
+		stopCh:     make(chan struct{}),
+		signalChan: make(chan os.Signal, 1),
 	}
 	return c
 }

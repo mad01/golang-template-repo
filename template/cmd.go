@@ -32,13 +32,10 @@ func cmdRunController() *cobra.Command {
 			spewInit()
 			initLog(verbose)
 
-			kube := newKube()
-
-			stopCh := make(chan struct{})
-			defer close(stopCh)
+			kube := newKube(kubeconfig)
 
 			controller := newController(kube, interval)
-			controller.Run(stopCh)
+			controller.Run()
 		},
 	}
 	command.Flags().StringVarP(&kubeconfig, "kube.config", "k", "", "outside cluster path to kube config")
