@@ -27,16 +27,24 @@ func newController(kube *Kube, interval time.Duration) *controller {
 func (c *controller) Run() {
 	log().Info("Starting controller")
 
-	go c.worker()
+	go c.worker(c.stopCh)
 
-	signalChan := make(chan os.Signal, 1)
-	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
-	<-signalChan
+	signal.Notify(c.signalChan, syscall.SIGINT, syscall.SIGTERM)
+	<-c.signalChan // Block until sigterm
+	defer close(c.stopCh)
 
 	log().Info("Stopping controller")
+	return
 }
 
-func (c *controller) worker() {
+func (c *controller) worker(stopCh chan struct{}) {
 	for {
+		select {
+		default:
+			// TODO: do a bit of the work
+		case <-stopCh:
+			log().Info("Stopping worker since stopCh closed")
+			return
+		}
 	}
 }
