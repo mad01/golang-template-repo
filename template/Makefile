@@ -39,6 +39,10 @@ container-build:
 container-push:
 	@docker push $(CONTAINER):$(VERSION)
 
+deploy:
+	@sed -e "s/{{IMAGE}}/${VERSION}/g; s/{{CONTAINER}}/${CONTAINER}/g;" template/deployment.yaml > deployment.yaml
+	@kubectl apply -f deployment.yaml
+
 quay-login:
 	@docker login -u $(QUAY_LOGIN) -p="$(QUAY_PASSWORD)" quay.io
 
