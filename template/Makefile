@@ -8,7 +8,6 @@ LD_FLAGS="-X main.Version=$(VERSION)  -extldflags \"-static\" "
 $( shell mkdir -p _bin )
 $( shell mkdir -p _release )
 
-export GOBIN=$(PWD)/_bin
 
 default: format format-verify build-dev
 
@@ -26,7 +25,7 @@ install:
 build: build-release
 build-dev:
 	@echo "----- running dev build-----"
-	@go install -v -ldflags $(LD_FLAGS) 
+	@export GOBIN=$(PWD)/_bin && go install -v -ldflags $(LD_FLAGS) 
 
 build-release:
 	@echo "----- running release build -----"
@@ -50,7 +49,6 @@ dep-ensure:
 	@dep ensure -vendor-only
 
 setup-deps:
-	@unset GOBIN
 	@go get -u github.com/golang/dep/cmd/dep
 	@go get -u golang.org/x/tools/cmd/goimports
 
