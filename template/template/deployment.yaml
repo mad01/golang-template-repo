@@ -2,8 +2,8 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  namespace: system
   name: {{GITHUB_REPO}}
+  namespace: system
 spec:
   replicas: 1
   template:
@@ -19,3 +19,10 @@ spec:
             - "./{{GITHUB_REPO}}"
           args:
             - "controller"
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: system
+  name: {{GITHUB_REPO}}
