@@ -1,8 +1,10 @@
 REPO={{GITHUB_REPO}}
 GITHUB_USER={{GITHUB_USERNAME}}
 REPO_PATH=github.com/$(GITHUB_USER)/$(REPO)
+
 CONTAINER=quay.io/$(GITHUB_USER)/$(REPO)
 VERSION ?= $(shell ./hacks/git-version)
+
 LD_FLAGS="-X main.Version=$(VERSION)  -extldflags \"-static\" "
 
 $( shell mkdir -p _bin )
@@ -38,10 +40,13 @@ container-build:
 container-push:
 	@docker push $(CONTAINER):$(VERSION)
 
-deploy:
-	@sed -e "s/{{IMAGE}}/${VERSION}/g; s/{{CONTAINER}}/${CONTAINER}/g;" template/deployment.yaml > deployment.yaml
+deploy: deploy-generate-from-template
 	@kubectl apply -f deployment.yaml
 
+deploy-generate-from-template:
+	@sed -e "s,{{CONTAINER}},${CONTAINER},g; s/{{VERSION}}/${VERSION}/g;" template/deployment.yaml > deployment.yaml
+
+	
 quay-login:
 	@docker login -u $(QUAY_LOGIN) -p="$(QUAY_PASSWORD)" quay.io
 

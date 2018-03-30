@@ -14,7 +14,7 @@ spec:
       serviceAccount: {{GITHUB_REPO}}
       containers:
         - name: {{GITHUB_REPO}}
-          image: {{CONTAINER}}:{{IMAGE}}
+          image: {{CONTAINER}}:{{VERSION}}
           command:
             - "./{{GITHUB_REPO}}"
           args:
