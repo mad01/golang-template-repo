@@ -1,13 +1,12 @@
 package main
 
-
 type Event struct {
 	Name string
 }
 
 func newEvent(name string) *Event {
 	e := &Event{
-		Name:     name,
+		Name: name,
 	}
 	return e
 }
