@@ -5,16 +5,18 @@ import (
 )
 
 type controller struct {
-	interval time.Duration
-	kube     *Kube
-	stopChan chan struct{}
+	interval       time.Duration
+	kube           *Kube
+	promController *PrometheusMetricsController
+	stopChan       chan struct{}
 }
 
 func newController(kube *Kube, interval time.Duration) *controller {
 	c := &controller{
-		interval: interval,
-		kube:     kube,
-		stopChan: make(chan struct{}),
+		interval:       interval,
+		kube:           kube,
+		promController: newPrometheusMetricsController(9100),
+		stopChan:       make(chan struct{}),
 	}
 	return c
 }
@@ -23,6 +25,7 @@ func (c *controller) Run() {
 	log().Info("Starting controller")
 
 	go c.worker(c.stopChan)
+	go c.promController.Run(c.stopChan)
 	go handleSigterm(c.stopChan)
 
 	<-c.stopChan // block until stopchan closed

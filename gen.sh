@@ -23,6 +23,7 @@ sed -e "s/{{GITHUB_REPO}}/${GITHUB_REPO}/g;" template/template/deployment.yaml >
 sed -e "s/{{GITHUB_REPO}}/${GITHUB_REPO}/g;" template/README.md > $GITHUB_REPO/README.md
 sed -e "s/{{GITHUB_REPO}}/${GITHUB_REPO}/g;" template/.gitignore > $GITHUB_REPO/.gitignore
 sed -e "s/{{GITHUB_REPO}}/${GITHUB_REPO}/g;" template/cmd.go > $GITHUB_REPO/cmd.go
+sed -e "s/{{GITHUB_REPO}}/${GITHUB_REPO}/g;" template/prometheus.go > $GITHUB_REPO/prometheus.go
 
 cp -r $GITHUB_REPO $GITHUB_USERNAME_DIR
 rm -r $GITHUB_REPO
