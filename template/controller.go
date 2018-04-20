@@ -7,7 +7,7 @@ import (
 type controller struct {
 	interval       time.Duration
 	kube           *Kube
-	promController *PrometheusMetricsController
+	promController *PrometheusController
 	stopChan       chan struct{}
 }
 
@@ -15,7 +15,7 @@ func newController(kube *Kube, interval time.Duration) *controller {
 	c := &controller{
 		interval:       interval,
 		kube:           kube,
-		promController: newPrometheusMetricsController(9100),
+		promController: newPrometheusController(9100),
 		stopChan:       make(chan struct{}),
 	}
 	return c

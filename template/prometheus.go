@@ -27,34 +27,36 @@ func getMetricPrefix(name string) string {
 	return fmt.Sprintf("%v_%v", metricPrefix, name)
 }
 
-type PrometheusMetricsController struct {
+type PrometheusController struct {
 	port int
 	addr string
 }
 
-func newPrometheusMetricsController(port int) *PrometheusMetricsController {
-	p := &PrometheusMetricsController{
+func newPrometheusController(port int) *PrometheusController {
+	p := &PrometheusController{
 		port: port,
 		addr: fmt.Sprintf(":%v", port),
 	}
 	return p
 }
 
-func (p *PrometheusMetricsController) registerMetrics() {
+func (p *PrometheusController) registerMetrics() {
 	prometheus.MustRegister(metricActiveServicesEventsCounter)
 }
 
-func (p *PrometheusMetricsController) Run(stopChan chan struct{}) {
-	log().Info("Starting PrometheusMetricsController")
+func (p *PrometheusController) Run(stopChan chan struct{}) {
+	log().Info("Starting PrometheusController")
 
 	p.registerMetrics()
 	p.httpServer()
 
 	<-stopChan
-	log().Info("Stopping PrometheusMetricsController")
+	log().Info("Stopping PrometheusController")
 }
 
-func (p *PrometheusMetricsController) httpServer() {
+func (p *PrometheusController) httpServer() {
 	http.Handle("/metrics", promhttp.Handler())
 	log().Fatal(http.ListenAndServe(p.addr, nil))
 }
+
+func (p *PrometheusController)
