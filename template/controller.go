@@ -1,25 +1,20 @@
 package main
 
 import (
-	"os"
-	"os/signal"
-	"syscall"
 	"time"
 )
 
 type controller struct {
-	interval   time.Duration
-	kube       *Kube
-	stopCh     chan struct{}
-	signalChan chan os.Signal
+	interval time.Duration
+	kube     *Kube
+	stopChan chan struct{}
 }
 
 func newController(kube *Kube, interval time.Duration) *controller {
 	c := &controller{
-		interval:   interval,
-		kube:       kube,
-		stopCh:     make(chan struct{}),
-		signalChan: make(chan os.Signal, 1),
+		interval: interval,
+		kube:     kube,
+		stopChan: make(chan struct{}),
 	}
 	return c
 }
@@ -27,23 +22,22 @@ func newController(kube *Kube, interval time.Duration) *controller {
 func (c *controller) Run() {
 	log().Info("Starting controller")
 
-	go c.worker(c.stopCh)
+	go c.worker(c.stopChan)
+	go handleSigterm(c.stopChan)
 
-	signal.Notify(c.signalChan, syscall.SIGINT, syscall.SIGTERM)
-	<-c.signalChan // Block until sigterm
-	defer close(c.stopCh)
+	<-c.stopChan // block until stopchan closed
 
 	log().Info("Stopping controller")
 	return
 }
 
-func (c *controller) worker(stopCh chan struct{}) {
+func (c *controller) worker(stopChan chan struct{}) {
 	for {
 		select {
 		default:
 			// TODO: do a bit of the work
-		case <-stopCh:
-			log().Info("Stopping worker since stopCh closed")
+		case <-stopChan:
+			log().Info("Stopping worker since stopChan closed")
 			return
 		}
 	}
