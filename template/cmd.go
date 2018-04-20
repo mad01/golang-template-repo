@@ -24,6 +24,7 @@ func cmdRunController() *cobra.Command {
 	var kubeconfig string
 	var verbose bool
 	var interval time.Duration
+	var port int
 	var command = &cobra.Command{
 		Use:   "controller",
 		Short: "run the controller",
@@ -34,11 +35,12 @@ func cmdRunController() *cobra.Command {
 
 			kube := newKube(kubeconfig)
 
-			controller := newController(kube, interval)
+			controller := newController(kube, interval, port)
 			controller.Run()
 		},
 	}
 	command.Flags().StringVarP(&kubeconfig, "kube.config", "k", "", "outside cluster path to kube config")
+	command.Flags().IntVarP(&port, "http.port", "p", 8080, "http server port")
 	command.Flags().DurationVarP(&interval, "interval.controller", "i", 10*time.Second, "controller update interaval for internal k8s caches")
 	command.Flags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
 	return command

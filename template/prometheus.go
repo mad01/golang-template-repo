@@ -2,12 +2,9 @@ package main
 
 // TODO: create init prometheus stuff for monitoring
 import (
-	"net/http"
-
 	"fmt"
 
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 const (
@@ -42,23 +39,4 @@ func newPrometheusController(port int) *PrometheusController {
 
 func (p *PrometheusController) registerMetrics() {
 	prometheus.MustRegister(metricActiveServicesEventsCounter)
-}
-
-func (p *PrometheusController) Run(stopChan chan struct{}) {
-	log().Info("Starting PrometheusController")
-
-	p.registerMetrics()
-	p.httpServer()
-
-	<-stopChan
-	log().Info("Stopping PrometheusController")
-}
-
-func (p *PrometheusController) httpServer() {
-	http.Handle("/metrics", promhttp.Handler())
-	log().Fatal(http.ListenAndServe(p.addr, nil))
-}
-
-func (p *PrometheusController) handler() http.Handler {
-	return promhttp.Handler()
 }

@@ -5,18 +5,18 @@ import (
 )
 
 type controller struct {
-	interval       time.Duration
-	kube           *Kube
-	promController *PrometheusController
-	stopChan       chan struct{}
+	interval time.Duration
+	kube     *Kube
+	stopChan chan struct{}
+	httpSrv  *HttpSrv
 }
 
-func newController(kube *Kube, interval time.Duration) *controller {
+func newController(kube *Kube, interval time.Duration, port int) *controller {
 	c := &controller{
-		interval:       interval,
-		kube:           kube,
-		promController: newPrometheusController(9100),
-		stopChan:       make(chan struct{}),
+		interval: interval,
+		kube:     kube,
+		stopChan: make(chan struct{}),
+		httpSrv:  newHttpSrv(port),
 	}
 	return c
 }
@@ -25,7 +25,7 @@ func (c *controller) Run() {
 	log().Info("Starting controller")
 
 	go c.worker(c.stopChan)
-	go c.promController.Run(c.stopChan)
+	go c.httpSrv.Run(c.stopChan)
 	go handleSigterm(c.stopChan)
 
 	<-c.stopChan // block until stopchan closed
