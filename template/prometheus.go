@@ -59,4 +59,6 @@ func (p *PrometheusController) httpServer() {
 	log().Fatal(http.ListenAndServe(p.addr, nil))
 }
 
-func (p *PrometheusController)
+func (p *PrometheusController) handler() http.Handler {
+	return promhttp.Handler()
+}
