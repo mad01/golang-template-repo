@@ -4,3 +4,4 @@ _release
 .version
 .idea
 ./deployment.yaml
+vendor/
