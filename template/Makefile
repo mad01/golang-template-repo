@@ -1,11 +1,7 @@
 REPO={{GITHUB_REPO}}
-GITHUB_USER={{GITHUB_USERNAME}}
-REPO_PATH=github.com/$(GITHUB_USER)/$(REPO)
-
-CONTAINER=quay.io/$(GITHUB_USER)/$(REPO)
+CONTAINER=quay.io/{{GITHUB_USERNAME}}/{{GITHUB_REPO}}
 VERSION ?= $(shell ./hacks/git-version)
-
-LD_FLAGS="-X main.Version=$(VERSION)  -extldflags \"-static\" "
+LD_FLAGS="-X main.Version=$(VERSION) -w -s -extldflags \"-static\" "
 
 $( shell mkdir -p _bin )
 $( shell mkdir -p _release )
@@ -44,14 +40,10 @@ deploy: deploy-generate-from-template
 	@kubectl apply -f deployment.yaml
 
 deploy-generate-from-template:
-	@sed -e "s,{{CONTAINER}},${CONTAINER},g; s/{{VERSION}}/${VERSION}/g;" template/deployment.yaml > deployment.yaml
-
-	
-quay-login:
-	@docker login -u $(QUAY_LOGIN) -p="$(QUAY_PASSWORD)" quay.io
+	@sed -e "s/{{VERSION}}/${VERSION}/g;" template/deployment.yaml > deployment.yaml
 
 dep-ensure:
-	@dep ensure -vendor-only
+	@dep ensure -v -vendor-only
 
 setup-deps:
 	@go get -u github.com/golang/dep/cmd/dep
