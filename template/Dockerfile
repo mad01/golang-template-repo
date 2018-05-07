@@ -1,19 +1,16 @@
-FROM golang:1.10.0-alpine3.7 as builder
-ENV buildpath=/go/src/github.com/{{GITHUB_USERNAME}}/{{GITHUB_REPO}}
-RUN mkdir -p $buildpath
-RUN apk add --update make bash git
-WORKDIR $buildpath
+FROM golang:1.10.1
+WORKDIR /go/src/github.com/{{GITHUB_USERNAME}}/{{GITHUB_REPO}}
+
+RUN go get github.com/golang/dep/cmd/dep
+RUN go get golang.org/x/tools/cmd/goimports
+COPY Gopkg.toml Gopkg.lock ./
+RUN dep ensure -v -vendor-only
 
 COPY . .
+RUN CGO_ENABLED=0 GOOS=linux make install
+RUN CGO_ENABLED=0 GOOS=linux make test
 
-RUN make build
-RUN go get -u golang.org/x/tools/cmd/goimports
-RUN make test
-
-
-FROM alpine:3.7
-RUN apk --no-cache add ca-certificates && update-ca-certificates
-COPY --from=builder /go/src/github.com/{{GITHUB_USERNAME}}/{{GITHUB_REPO}}/_release/{{GITHUB_REPO}} /{{GITHUB_REPO}}
-
-
-ENTRYPOINT ["/{{GITHUB_REPO}}"]
+FROM alpine:latest
+RUN apk --no-cache add ca-certificates
+COPY --from=0 /go/bin/{{GITHUB_REPO}} /bin/{{GITHUB_REPO}}
+ENTRYPOINT ["/bin/{{GITHUB_REPO}}"]
