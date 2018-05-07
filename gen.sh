@@ -25,6 +25,9 @@ sed -e "s/{{GITHUB_REPO}}/${GITHUB_REPO}/g;" template/.gitignore > $GITHUB_REPO/
 sed -e "s/{{GITHUB_REPO}}/${GITHUB_REPO}/g;" template/cmd.go > $GITHUB_REPO/cmd.go
 sed -e "s/{{GITHUB_REPO}}/${GITHUB_REPO}/g;" template/prometheus.go > $GITHUB_REPO/prometheus.go
 
+sed -e "s/{{GITHUB_REPO}}/${GITHUB_REPO}/g; s/{{GITHUB_USERNAME}}/${GITHUB_USERNAME}/g;" template/internal/k8s/buffer.go > $GITHUB_REPO/internal/k8s/buffer.go
+sed -e "s/{{GITHUB_REPO}}/${GITHUB_REPO}/g; s/{{GITHUB_USERNAME}}/${GITHUB_USERNAME}/g;" template/internal/k8s/watcher.go > $GITHUB_REPO/internal/k8s/watcher.go
+
 cp -r $GITHUB_REPO $GITHUB_USERNAME_DIR
 rm -r $GITHUB_REPO
 
