@@ -1,0 +1,27 @@
+#!/bin/sh
+LANG="en_US.UTF-8"
+LC_COLLATE="en_US.UTF-8"
+LC_CTYPE="en_US.UTF-8"
+LC_MESSAGES="en_US.UTF-8"
+LC_MONETARY="en_US.UTF-8"
+LC_NUMERIC="en_US.UTF-8"
+LC_TIME="en_US.UTF-8"
+LC_ALL="en_US.UTF-8"
+
+warn() {
+    echo "$1" >&2
+}
+
+die() {
+    warn "$1"
+    exit 1
+}
+
+[ -e "~/.golang-template-repo" ] && die "~/.golang-template-repo already exists."
+
+git clone https://github.com/mad01/golang-template-repo.git ~/.golang-template-repo
+cd ~/.golang-template-repo
+
+./gen
+
+echo "golang-template is installed."
