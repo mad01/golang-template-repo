@@ -23,8 +23,19 @@ find "${GITHUB_REPO}" -type f -print0 | xargs -0 sed -i -e \
 cp -r "${GITHUB_REPO}" "${GITHUB_USERNAME_DIR}"
 rm -r "${GITHUB_REPO}" 
 
+function setup-git() {
+    git init 
+    git add .
+    git commit -m 'init'
+}
+
+function setup-dep() {
+	go get -u github.com/golang/dep/cmd/dep
+	go get -u golang.org/x/tools/cmd/goimports
+    dep ensure -v
+}
+
 pushd "${GITHUB_USERNAME_DIR}/${GITHUB_REPO}"
-git init 
-git add .
-git commit -m 'init'
+    setup-git
+    setup-dep
 popd
