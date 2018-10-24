@@ -23,5 +23,3 @@ git clone https://github.com/mad01/golang-template-repo.git ~/.golang-template-r
 cd ~/.golang-template-repo
 
 ./gen
-
-echo "golang-template is installed."
