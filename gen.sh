@@ -9,29 +9,21 @@ if [[ -z "${GOPATH}" ]]; then
     exit 1
 fi
 
-read -p 'Set github username: ' GITHUB_USERNAME
-read -p 'Set github repo name: ' GITHUB_REPO
+read -p 'github username: ' GITHUB_USERNAME
+read -p 'github repo: ' GITHUB_REPO
 
-GITHUB_USERNAME_DIR=$GOPATH/src/github.com/$GITHUB_USERNAME
-mkdir -p $GITHUB_USERNAME_DIR
+GITHUB_USERNAME_DIR="${GOPATH}/src/github.com/${GITHUB_USERNAME}"
+mkdir -p "${GITHUB_USERNAME_DIR}"
 
 cp -r template $GITHUB_REPO
 
-sed -e "s/{{GITHUB_REPO}}/${GITHUB_REPO}/g; s/{{GITHUB_USERNAME}}/${GITHUB_USERNAME}/g;" template/Makefile > $GITHUB_REPO/Makefile
-sed -e "s/{{GITHUB_REPO}}/${GITHUB_REPO}/g; s/{{GITHUB_USERNAME}}/${GITHUB_USERNAME}/g;" template/Dockerfile > $GITHUB_REPO/Dockerfile
-sed -e "s/{{GITHUB_REPO}}/${GITHUB_REPO}/g;" template/template/deployment.yaml > $GITHUB_REPO/template/deployment.yaml
-sed -e "s/{{GITHUB_REPO}}/${GITHUB_REPO}/g;" template/README.md > $GITHUB_REPO/README.md
-sed -e "s/{{GITHUB_REPO}}/${GITHUB_REPO}/g;" template/.gitignore > $GITHUB_REPO/.gitignore
-sed -e "s/{{GITHUB_REPO}}/${GITHUB_REPO}/g;" template/cmd.go > $GITHUB_REPO/cmd.go
-sed -e "s/{{GITHUB_REPO}}/${GITHUB_REPO}/g;" template/prometheus.go > $GITHUB_REPO/prometheus.go
+find "${GITHUB_REPO}" -type f -print0 | xargs -0 sed -i -e \
+    "s/{{GITHUB_REPO}}/${GITHUB_REPO}/g; s/{{GITHUB_USERNAME}}/${GITHUB_USERNAME}/g;" 
 
-sed -e "s/{{GITHUB_REPO}}/${GITHUB_REPO}/g; s/{{GITHUB_USERNAME}}/${GITHUB_USERNAME}/g;" template/internal/k8s/buffer.go > $GITHUB_REPO/internal/k8s/buffer.go
-sed -e "s/{{GITHUB_REPO}}/${GITHUB_REPO}/g; s/{{GITHUB_USERNAME}}/${GITHUB_USERNAME}/g;" template/internal/k8s/watcher.go > $GITHUB_REPO/internal/k8s/watcher.go
+cp -r "${GITHUB_REPO}" "${GITHUB_USERNAME_DIR}"
+rm -r "${GITHUB_REPO}" 
 
-cp -r $GITHUB_REPO $GITHUB_USERNAME_DIR
-rm -r $GITHUB_REPO
-
-pushd $GITHUB_USERNAME_DIR/$GITHUB_REPO
+pushd "${GITHUB_USERNAME_DIR}/${GITHUB_REPO}"
 git init 
 git add .
 git commit -m 'init'
