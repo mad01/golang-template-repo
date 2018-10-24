@@ -10,5 +10,6 @@
 ### Dev setup
 ```
 $ brew install go
-$ go get -u github.com/golang/dep/cmd/dep
+$ make setup-deps
+$ make dep-ensure
 ```
