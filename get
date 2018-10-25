@@ -15,17 +15,16 @@ LC_ALL="en_US.UTF-8"
 REPO="~/.golang-template-repo"
 
 update-repo() {
-    pushd "${REPO}"
-    git pull 
-    popd
+	pushd "${REPO}"
+	git pull
+	popd
 }
 
 if [ -d "${REPO}" ]; then
-    update-depo
+	update-depo
 else
-    git clone https://github.com/mad01/golang-template-repo.git ~/.golang-template-repo
-    pushd "${REPO}"
-    bash -c gen
-    popd
-fi 
-
+	git clone https://github.com/mad01/golang-template-repo.git ~/.golang-template-repo
+	pushd "${REPO}"
+	bash -c ./gen
+	popd
+fi

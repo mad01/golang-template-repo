@@ -40,5 +40,4 @@ setup-git
 setup-dep
 popd
 
-
 echo "repo dir: " "${GITHUB_USERNAME_DIR}"/"${GITHUB_REPO}"
