@@ -20,11 +20,16 @@ update-repo() {
 	popd
 }
 
+generate-repo() {
+	bash -c ./gen
+}
+
 if [ -d "${REPO}" ]; then
-	update-depo
+	update-repo
+    generate-repo
 else
 	git clone https://github.com/mad01/golang-template-repo.git ~/.golang-template-repo
 	pushd "${REPO}"
-	bash -c ./gen
+    generate-repo
 	popd
 fi
