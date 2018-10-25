@@ -39,3 +39,6 @@ pushd "${GITHUB_USERNAME_DIR}/${GITHUB_REPO}"
 setup-git
 setup-dep
 popd
+
+
+echo "repo dir: " "${GITHIB_USERNAME_DIR}"/"${GITHUB_REPO}"
