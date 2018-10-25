@@ -28,7 +28,7 @@ if [ -d "${REPO}" ]; then
 	update-repo
     generate-repo
 else
-	git clone https://github.com/mad01/golang-template-repo.git ~/.golang-template-repo
+	git clone https://github.com/mad01/golang-template-repo.git "${REPO}"
 	pushd "${REPO}"
     generate-repo
 	popd
