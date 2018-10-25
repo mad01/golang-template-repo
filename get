@@ -17,7 +17,6 @@ REPO=~/.golang-template-repo
 update-repo() {
 	pushd "${REPO}"
 	git pull
-	popd
 }
 
 generate-repo() {
@@ -31,5 +30,4 @@ else
 	git clone https://github.com/mad01/golang-template-repo.git "${REPO}"
 	pushd "${REPO}"
     generate-repo
-	popd
 fi
