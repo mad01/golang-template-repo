@@ -13,6 +13,13 @@ LC_MONETARY="en_US.UTF-8"
 LC_NUMERIC="en_US.UTF-8"
 LC_TIME="en_US.UTF-8"
 LC_ALL="en_US.UTF-8"
+REPO="~/.golang-template-repo"
+
+update-repo() {
+    pushd "${REPO}"
+    git pull 
+    popd
+}
 
 warn() {
     echo "$1" >&2
@@ -23,9 +30,14 @@ die() {
     exit 1
 }
 
-[ -e "~/.golang-template-repo" ] && die "~/.golang-template-repo already exists."
 
-git clone https://github.com/mad01/golang-template-repo.git ~/.golang-template-repo
-cd ~/.golang-template-repo
+if [ -d "${REPO}" ]; then
+    update-depo
+else
+    git clone https://github.com/mad01/golang-template-repo.git ~/.golang-template-repo
+    pushd "${REPO}"
+    bash -c gen
+    popd
+fi 
 
-./gen
+
