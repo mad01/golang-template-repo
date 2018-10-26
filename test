@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+
+function checkBinary() {
+	if ! which $1 >&/dev/null; then
+		echo "Unable to locate $1, please ensure it is installed and on your \$PATH."
+		exit 1
+	fi
+}
+
+checkBinary docker
+
+docker build -t golang-template-repo:latest --file Dockerfile-testing .
+
+docker run \
+    -it \
+    --rm \
+    golang-template-repo \
+    bash -c "$(wget https://raw.githubusercontent.com/mad01/golang-template-repo/master/get -O -)"
