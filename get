@@ -5,29 +5,110 @@ set -o nounset
 set -o pipefail
 
 LANG="en_US.UTF-8"
-LC_COLLATE="en_US.UTF-8"
-LC_CTYPE="en_US.UTF-8"
-LC_MESSAGES="en_US.UTF-8"
-LC_MONETARY="en_US.UTF-8"
-LC_NUMERIC="en_US.UTF-8"
-LC_TIME="en_US.UTF-8"
 LC_ALL="en_US.UTF-8"
-REPO=~/.golang-template-repo
+LANGUAGE="en_US.UTF-8"
 
-update-repo() {
-	pushd "${REPO}"
+NC=$(echo -en '\033[0m')
+RED=$(echo -en '\033[00;31m')
+GREEN=$(echo -en '\033[00;32m')
+YELLOW=$(echo -en '\033[00;33m')
+BLUE=$(echo -en '\033[00;34m')
+MAGENTA=$(echo -en '\033[00;35m')
+PURPLE=$(echo -en '\033[00;35m')
+CYAN=$(echo -en '\033[00;36m')
+WHITE=$(echo -en '\033[01;37m')
+
+#
+# user input
+read -p 'github username: ' GITHUB_USERNAME
+read -p 'github repo: ' REPO
+#
+#
+
+TEMPLATE_REPO=~/.golang-template-repo
+INSTALL_LOCATION="${GOPATH}/src/github.com/${GITHUB_USERNAME}"
+REPO_DIR="${INSTALL_LOCATION}/${REPO}"
+
+function echoRepoInColor() {
+	echo "repo dir: "${GREEN}"${REPO_DIR}"${NC}
+}
+
+function checkBinary() {
+	if ! which $1 >&/dev/null; then
+		echo "Unable to locate $1, please ensure it is installed and on your \$PATH."
+		exit 1
+	fi
+}
+
+function checkGopathExists() {
+	if [[ -z "${GOPATH}" ]]; then
+		echo "missing GOPATH in env"
+		exit 1
+	fi
+}
+function gotoTemplateRepo() {
+	pushd "${TEMPLATE_REPO}"
+}
+
+function gotoRepo() {
+	pushd "${REPO_DIR}"
+}
+
+function updateRepo() {
+	gotoTemplateRepo
 	git pull
 }
 
-generate-repo() {
-	bash -c ./gen
+function gitInit() {
+	gotoRepo
+	git init
+	git add .
+	git commit -m 'init'
 }
 
-if [ -d "${REPO}" ]; then
-	update-repo
-    generate-repo
-else
-	git clone https://github.com/mad01/golang-template-repo.git "${REPO}"
-	pushd "${REPO}"
-    generate-repo
-fi
+function depInstall() {
+	gotoRepo
+	go get -u github.com/golang/dep/cmd/dep
+	go get -u golang.org/x/tools/cmd/goimports
+	dep ensure -v
+}
+
+function cloneRepo() {
+	git clone https://github.com/mad01/golang-template-repo.git "${TEMPLATE_REPO}"
+}
+
+function pullOrUpdateRepo() {
+	if [ -d "${TEMPLATE_REPO}" ]; then
+		updateRepo
+	else
+		cloneRepo
+	fi
+}
+
+function sedRepoFiles() {
+	find "${REPO_DIR}" -type f -print0 | xargs -0 sed -i -e \
+		"s/{{REPO}}/${REPO}/g; s/{{GITHUB_USERNAME}}/${GITHUB_USERNAME}/g;"
+}
+
+function createDirInGopath() {
+	mkdir -p "${INSTALL_LOCATION}"
+	echo "${INSTALL_LOCATION}"
+}
+
+function copyTemplateToRepo() {
+	cp -r "${TEMPLATE_REPO}/template" "${REPO_DIR}"
+}
+
+#
+#
+# call functions
+
+checkBinary go     # check golang is install and go bin exists
+checkGopathExists  # check that gopath env exists
+pullOrUpdateRepo   # pull or update template repo
+createDirInGopath  # create target repo dir with full path
+copyTemplateToRepo # copy template repo to target repo dir
+sedRepoFiles       # sed template files in repo dir
+depInstall         # goto repo and update all deps
+gitInit            # init git with all files
+echoRepoInColor    # echo repo path in color
