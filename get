@@ -87,7 +87,7 @@ function pullOrUpdateTemplateRepo() {
 
 function sedRepoFiles() {
 	find "${REPO_DIR}" -type f -print0 | xargs -0 sed -i -e \
-		"s/{{REPO}}/${REPO}/g; s/{{GITHUB_USERNAME}}/${GITHUB_USERNAME}/g;"
+		"s/{{GITHUB_REPO}}/${REPO}/g; s/{{GITHUB_USERNAME}}/${GITHUB_USERNAME}/g;"
 }
 
 function createDirInGopath() {
