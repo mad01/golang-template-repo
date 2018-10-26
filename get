@@ -77,7 +77,7 @@ function cloneRepo() {
 	git clone https://github.com/mad01/golang-template-repo.git "${TEMPLATE_REPO}"
 }
 
-function pullOrUpdateRepo() {
+function pullOrUpdateTemplateRepo() {
 	if [ -d "${TEMPLATE_REPO}" ]; then
 		updateRepo
 	else
@@ -99,16 +99,24 @@ function copyTemplateToRepo() {
 	cp -r "${TEMPLATE_REPO}/template" "${REPO_DIR}"
 }
 
+function generateRepo() {
+	pullOrUpdateTemplateRepo # pull or update template repo
+	createDirInGopath        # create target repo dir with full path
+	copyTemplateToRepo       # copy template repo to target repo dir
+	sedRepoFiles             # sed template files in repo dir
+	depInstall               # goto repo and update all deps
+	gitInit                  # init git with all files
+	echoRepoInColor          # echo repo path in color
+}
+
 #
 #
 # call functions
+checkBinary go    # check go bin exists
+checkBinary git   # check git bin exists
+checkGopathExists # check that gopath env exists
 
-checkBinary go     # check golang is install and go bin exists
-checkGopathExists  # check that gopath env exists
-pullOrUpdateRepo   # pull or update template repo
-createDirInGopath  # create target repo dir with full path
-copyTemplateToRepo # copy template repo to target repo dir
-sedRepoFiles       # sed template files in repo dir
-depInstall         # goto repo and update all deps
-gitInit            # init git with all files
-echoRepoInColor    # echo repo path in color
+generateRepo
+#
+#
+#
