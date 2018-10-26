@@ -4,7 +4,6 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-
 function checkBinary() {
 	if ! which $1 >&/dev/null; then
 		echo "Unable to locate $1, please ensure it is installed and on your \$PATH."
@@ -12,12 +11,27 @@ function checkBinary() {
 	fi
 }
 
+function buildTestContainer() {
+	docker build -t golang-template-repo:latest - <<EOF
+FROM golang:1.11.1
+RUN apt update -y \ 
+    && apt install -y \
+       locales \
+       wget \
+       make \
+       git \
+    && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+EOF
+}
+
+function runTestContainer() {
+	docker run \
+		-it \
+		--rm \
+		golang-template-repo:latest \
+		bash -c "$(wget https://raw.githubusercontent.com/mad01/golang-template-repo/master/get -O -)"
+}
+
 checkBinary docker
-
-docker build -t golang-template-repo:latest --file Dockerfile-testing .
-
-docker run \
-    -it \
-    --rm \
-    golang-template-repo \
-    bash -c "$(wget https://raw.githubusercontent.com/mad01/golang-template-repo/master/get -O -)"
+buildTestContainer
+runTestContainer
