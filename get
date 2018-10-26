@@ -18,12 +18,22 @@ PURPLE=$(echo -en '\033[00;35m')
 CYAN=$(echo -en '\033[00;36m')
 WHITE=$(echo -en '\033[01;37m')
 
+function varNotEmpty() {
+	if [[ -z $1 ]]; then
+		echo "variable $2 is empty"
+		exit 1
+	fi
+}
+
 #
 # user input
 read -p 'github username: ' GITHUB_USERNAME
 read -p 'github repo: ' REPO
 #
 #
+
+varNotEmpty $GITHUB_USERNAME "GITHUB_USERNAME"
+varNotEmpty $REPO "REPO"
 
 TEMPLATE_REPO=~/.golang-template-repo
 INSTALL_LOCATION="${GOPATH}/src/github.com/${GITHUB_USERNAME}"
@@ -46,6 +56,7 @@ function checkGopathExists() {
 		exit 1
 	fi
 }
+
 function gotoTemplateRepo() {
 	pushd "${TEMPLATE_REPO}"
 }
