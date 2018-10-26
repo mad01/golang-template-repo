@@ -25,6 +25,24 @@ function varNotEmpty() {
 	fi
 }
 
+function reportGitConfigMissing() {
+	readonly local GIT_ERR='
+Run
+  git config --global user.email "you@example.com"
+  git config --global user.name "Your Name"
+'
+	echo ${RED} "${GIT_ERR}" ${NC}
+}
+
+function checkGitConfig() {
+	if git config -l | grep -q 'user.name\|user.email'; then
+		echo found
+	else
+		reportGitConfigMissing
+		exit 1
+	fi
+}
+
 #
 # user input
 read -p 'github username: ' GITHUB_USERNAME
@@ -34,6 +52,7 @@ read -p 'github repo: ' REPO
 
 varNotEmpty $GITHUB_USERNAME "GITHUB_USERNAME"
 varNotEmpty $REPO "REPO"
+checkGitConfig
 
 TEMPLATE_REPO=~/.golang-template-repo
 INSTALL_LOCATION="${GOPATH}/src/github.com/${GITHUB_USERNAME}"
