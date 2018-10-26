@@ -15,4 +15,10 @@ $ bash -c "$(wget https://raw.githubusercontent.com/mad01/golang-template-repo/m
 ```
 
 
-     bash -c "$(wget https://raw.githubusercontent.com/mad01/golang-template-repo/master/get -O -)"
+###  shell function to init repo
+```shell
+
+function generate-go-repo() {
+    bash -c "$(curl -fsSL https://raw.githubusercontent.com/mad01/golang-template-repo/master/get)"
+}
+```
