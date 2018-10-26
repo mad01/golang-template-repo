@@ -1,0 +1,9 @@
+.git/
+Dockerfile
+target/
+.tox
+venv
+.vent
+build 
+dist
+*.egg-info
