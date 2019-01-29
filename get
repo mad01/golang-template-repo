@@ -36,7 +36,7 @@ Run
 
 function checkGitConfig() {
 	if git config -l | grep -q 'user.name\|user.email'; then
-		echo found
+		echo ${GREEN} "found global git config" ${NC}
 	else
 		reportGitConfigMissing
 		exit 1
