@@ -18,35 +18,30 @@ test: format-verify
 	@go test -v $(shell go list ./... | grep -v '/vendor/')
 
 install:
-	@GOBIN=$(GOPATH)/bin && go install -v -ldflags $(LD_FLAGS) 
+	@GOBIN=$(GOPATH)/bin && go install -mod=readonly -v -ldflags $(LD_FLAGS) 
 
-build: build-release
 build-dev:
 	@echo "----- running dev build-----"
-	@export GOBIN=$(PWD)/_bin && go install -v -ldflags $(LD_FLAGS) 
+	@export GOBIN=$(PWD)/_bin && go install -v -mod=readonly -ldflags $(LD_FLAGS) 
 
-build-release:
+build:
 	@echo "----- running release build -----"
 	@go build -v -o _release/$(REPO) -ldflags $(LD_FLAGS) 
 
-container: container-build
-container-build:
+container:
 	@docker build -t $(CONTAINER):$(VERSION) --file Dockerfile .
 
 container-push:
 	@docker push $(CONTAINER):$(VERSION)
 
-deploy: deploy-generate-from-template
+deploy:
+	@sed -e "s/{{VERSION}}/${VERSION}/g;" template/deployment.yaml > deployment.yaml
 	@kubectl apply -f deployment.yaml
 
-deploy-generate-from-template:
-	@sed -e "s/{{VERSION}}/${VERSION}/g;" template/deployment.yaml > deployment.yaml
+download:
+	@go mod download
 
-dep-ensure:
-	@dep ensure -v -vendor-only
-
-setup-deps:
-	@go get -u github.com/golang/dep/cmd/dep
+setup:
 	@go get -u golang.org/x/tools/cmd/goimports
 
 format:
