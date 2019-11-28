@@ -9,16 +9,14 @@ import (
 )
 
 type HttpSrv struct {
-	router         *gin.Engine
-	port           int
-	promController *PrometheusController
+	router *gin.Engine
+	port   int
 }
 
 func newHttpSrv(port int) *HttpSrv {
 	return &HttpSrv{
-		router:         gin.Default(),
-		port:           port,
-		promController: newPrometheusController(port),
+		router: gin.Default(),
+		port:   port,
 	}
 }
 
