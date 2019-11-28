@@ -6,7 +6,6 @@ LD_FLAGS="-X main.Version=$(VERSION) -w -s -extldflags \"-static\" "
 $( shell mkdir -p _bin )
 $( shell mkdir -p _release )
 
-
 default: format format-verify build-dev
 
 clean:
@@ -55,3 +54,4 @@ format-verify:
 	@hacks/verify-gofmt
 	@echo "----- running goimports verify -----"
 	@hacks/verify-goimports
+
