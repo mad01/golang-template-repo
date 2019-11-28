@@ -24,19 +24,6 @@ func getMetricPrefix(name string) string {
 	return fmt.Sprintf("%v_%v", metricPrefix, name)
 }
 
-type PrometheusController struct {
-	port int
-	addr string
-}
-
-func newPrometheusController(port int) *PrometheusController {
-	p := &PrometheusController{
-		port: port,
-		addr: fmt.Sprintf(":%v", port),
-	}
-	return p
-}
-
-func (p *PrometheusController) registerMetrics() {
-	prometheus.MustRegister(metricActiveServicesEventsCounter)
+func init() {
+	prometheus.MustRegister(metricPatchedPodsCounter)
 }
