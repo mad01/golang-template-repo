@@ -25,5 +25,5 @@ func getMetricPrefix(name string) string {
 }
 
 func init() {
-	prometheus.MustRegister(metricPatchedPodsCounter)
+	prometheus.MustRegister(metricActiveServicesEventsCounter)
 }
