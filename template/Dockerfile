@@ -11,5 +11,5 @@ RUN CGO_ENABLED=0 GOOS=linux make test
 
 FROM alpine:latest
 RUN apk --no-cache add ca-certificates
-COPY --from=0 /go/bin/k8s-metadata /bin/k8s-metadata
-ENTRYPOINT ["/bin/k8s-metadata"]
+COPY --from=0 /go/bin/{{GITHUB_REPO}} /bin/{{GITHUB_REPO}}
+ENTRYPOINT ["/bin/{{GITHUB_REPO}}"]
