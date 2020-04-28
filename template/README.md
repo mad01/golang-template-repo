@@ -10,6 +10,6 @@
 ### Dev setup
 ```
 $ brew install go
-$ make setup-deps
-$ make dep-ensure
+$ go mod vendor
+$ go mod download
 ```
