@@ -1,4 +1,4 @@
-FROM golang:1.13
+FROM golang:1.14
 WORKDIR /go/src/github.com/{{GITHUB_USERNAME}}/{{GITHUB_REPO}}
 
 RUN go get golang.org/x/tools/cmd/goimports
