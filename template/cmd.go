@@ -51,7 +51,7 @@ func cmdRunController() *cobra.Command {
 }
 
 func runCmd() {
-	var rootCmd = &cobra.Command{Use: "k8s-metadata"}
+	var rootCmd = &cobra.Command{Use: "{{GITHUB_REPO}}"}
 	rootCmd.AddCommand(cmdVersion())
 	rootCmd.AddCommand(cmdRunController())
 

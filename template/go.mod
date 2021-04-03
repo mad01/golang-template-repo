@@ -1,4 +1,4 @@
-module github.com/netent-tech/k8s-metadata
+module github.com/{{GITHUB_USERNAME}}/{{GITHUB_REPO}}
 
 go 1.13
 
